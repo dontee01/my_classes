@@ -1,2 +1,2 @@
-# my_classes
+# PHP Classes and Libraries
 Collection of useful classes and functions
