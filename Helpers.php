@@ -29,6 +29,10 @@ class Helpers
         return  $newtoken;
     }
     
+    /**
+     * 
+     * @return date <b>Current datetime</b>
+     */
     function time_now()
     {
         $main = date('Y-m-d H:i:s');
@@ -37,7 +41,6 @@ class Helpers
     
     /**
      * 
-     * @param date Current datetime
      * @return date <b>Yesterday</b>
      */
     function yesterday()
@@ -61,7 +64,6 @@ class Helpers
     
     /**
      * 
-     * @param date Current datetime
      * @return date <b>Tomorrow</b>
      */
     function tomorrow()
@@ -72,6 +74,12 @@ class Helpers
         return date('Y-m-d', $date);
     }
 
+    /**
+     * 
+     * @param date $date_first <p>first datetime</p>
+     * @param date $date_first <p>second datetime</p>
+     * @return int <b>The time difference</b>
+     */
     public function time_interval($date_first, $date_second)
     {
 
@@ -79,6 +87,12 @@ class Helpers
         return $diff;
     }
     
+    /**
+     * 
+     * @param date datetime
+     * @param int 
+     * @return int <b>The time difference</b>
+     */
     function time_diff($time, $diff)
     {
         $date = strtotime($time.' -'.$diff.' year');
@@ -192,8 +206,24 @@ class Helpers
     public function process_mobile($mobile, $countryCode = "234")
     {
         $new_num = "";
+        
+        // ////////////////handle foreign numbers
+        if (substr($mobile, 0, 1) == '+')
+        {
+            $mobile = str_replace('+', '', $mobile);
+        }
         $len_fone = strlen($mobile);
-        if ($len_fone == 13 || $len_fone == 11)
+
+        $code = substr($mobile, 0, 3);
+        if ($len_fone > 9 && $len_fone < 18)
+        {
+            if ($code != '234' && ($len_fone != 11 && $len_fone != 10))
+            {
+                return $mobile;
+            }
+        }
+        // //////////////////foreign number ends here/////////////////////
+        if ($len_fone == 13 || $len_fone == 11 || $len_fone == 10)
         {
             if ($len_fone == 13)
             {
@@ -224,11 +254,24 @@ class Helpers
                     $new_num = "";
                 }
             }
+            if ($len_fone == 10)
+            {
+                $sub = $mobile[0];
+                if ($sub == "0")
+                {
+                    $new_num = "";
+                }
+                else
+                {
+                    $new_num = $countryCode.$mobile;
+                }
+            }
         }
         //             consider
         else
         {
             $new_num = "";
+//             array_push($param_null, 'mobile');
         }
         return $new_num;
     }
@@ -301,6 +344,17 @@ class Helpers
         $name = [
             'first_name' => $fn, 'last_name' => $ln, 'middle_name' => $mn
         ];
+
+        return $name;
+    }
+
+    public function name_algo()
+    {
+        $str = "AGLRSTabcUVWXYZdefBCDEFghijkmnopqHIJKrstuvwxyzMNOPQ";
+        $mod = rand() % 50;
+        $rand_char = substr($str, $mod, 2);
+        $rand_number = rand(1000001, 9999999);
+        $name = $rand_number.$rand_char;
 
         return $name;
     }
